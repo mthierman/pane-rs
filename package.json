@@ -9,6 +9,9 @@
     },
     "packageManager": "pnpm@10.19.0",
     "type": "module",
+    "scripts": {
+        "metadata": "cargo metadata --no-deps --format-version=1"
+    },
     "devDependencies": {
         "@js-temporal/polyfill": "^0.5.1",
         "@types/node": "^24.10.0",
