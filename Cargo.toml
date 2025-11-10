@@ -4,9 +4,8 @@ version = "0.0.0"
 edition = "2024"
 publish = false
 
-[dependencies.windows]
-version = "0.62.2"
-features = [
+[dependencies]
+windows = { version = "0.62.2", features = [
   "UI_ViewManagement",
   "Win32_Foundation",
   "Win32_Graphics_Dwm",
@@ -19,9 +18,10 @@ features = [
   "Win32_UI_Controls",
   "Win32_UI_HiDpi",
   "Win32_UI_Input_KeyboardAndMouse",
+  "Win32_UI_Shell",
   "Win32_UI_TextServices",
   "Win32_UI_WindowsAndMessaging",
-]
+] }
 
 [build-dependencies]
 embed-resource = "3.0.6"
