@@ -1,5 +1,7 @@
 use std::{env, error::Error, path::PathBuf, process::Command};
 
+use pane::resource_compiler;
+
 fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo::rustc-link-arg-bins=/WX");
 
@@ -38,7 +40,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         } else if let Some(stem) = data_resource.file_stem() {
             let out_file = out_dir.join(stem).with_extension("res");
 
-            Command::new("rc")
+            Command::new(resource_compiler("x64")?)
                 .args([
                     "/fo",
                     out_file.to_str().unwrap(),
