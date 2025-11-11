@@ -22,13 +22,14 @@ impl PwstrExt for PWSTR {
 
 pub fn get_instance() -> Result<HINSTANCE> {
     let mut hmodule = HMODULE::default();
+    let addr = get_instance as *const ();
 
     unsafe {
         GetModuleHandleExW(
             GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT | GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
-            PCWSTR((get_instance as *const ()).cast()),
+            PCWSTR(addr.cast()),
             &mut hmodule,
-        )?;
+        )?
     }
 
     Ok(hmodule.into())
