@@ -32,8 +32,8 @@ fn main() -> Result<ExitCode> {
     let wc = WNDCLASSEXW {
         lpszClassName: w!("window"),
         cbSize: size_of::<WNDCLASSEXW>() as u32,
-        hCursor: unsafe { LoadCursorW(None, IDC_ARROW).unwrap() },
-        hInstance: get_instance().unwrap(),
+        hCursor: unsafe { LoadCursorW(None, IDC_ARROW)? },
+        hInstance: get_instance()?,
         lpfnWndProc: Some(wndproc),
         ..Default::default()
     };
@@ -55,8 +55,7 @@ fn main() -> Result<ExitCode> {
             None,
             get_instance().ok(),
             None,
-        )
-        .unwrap();
+        )?;
     }
 
     message_loop()
