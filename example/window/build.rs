@@ -13,7 +13,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             .to_path_buf();
 
         let data = manifest_dir.join("data");
-        println!("cargo:warning={:?}", data);
+
         let data_manifest = data.join("app.manifest").canonicalize()?;
         println!("cargo:rerun-if-changed={}", data_manifest.display());
         let data_icon = data.join("app.ico").canonicalize()?;
