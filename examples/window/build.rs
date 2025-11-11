@@ -1,5 +1,4 @@
 use std::{env, error::Error, path::PathBuf, process::Command};
-use tools;
 
 fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo::rustc-link-arg-bins=/WX");
@@ -7,6 +6,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     if env::var("TARGET")?.ends_with("windows-msvc") {
         let out_dir = PathBuf::from(env::var("OUT_DIR")?);
         let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR")?)
+            .parent()
+            .unwrap()
             .parent()
             .unwrap()
             .to_path_buf();

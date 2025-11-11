@@ -9,7 +9,7 @@ publish = false
 [dependencies]
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
-windows = { version = "0.62.2", features = [
+windows = { workspace = true, features = [
   "UI_ViewManagement",
   "Win32_Foundation",
   "Win32_Graphics_Dwm",
@@ -27,6 +27,3 @@ windows = { version = "0.62.2", features = [
   "Win32_UI_TextServices",
   "Win32_UI_WindowsAndMessaging",
 ] }
-
-[build-dependencies]
-tools = { path = "../tools" }

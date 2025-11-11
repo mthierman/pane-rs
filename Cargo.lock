@@ -20,7 +20,16 @@ version = "0.0.0"
 dependencies = [
  "serde",
  "serde_json",
- "tools",
+ "windows",
+]
+
+[[package]]
+name = "pane_example_window"
+version = "0.0.0"
+dependencies = [
+ "pane",
+ "serde",
+ "serde_json",
  "windows",
 ]
 
@@ -100,15 +109,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
-]
-
-[[package]]
-name = "tools"
-version = "0.0.0"
-dependencies = [
- "serde",
- "serde_json",
- "windows",
 ]
 
 [[package]]
