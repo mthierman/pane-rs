@@ -14,6 +14,12 @@ fn main() -> Result<()> {
     let folder = known_folder(FOLDERID_LocalAppData, None)?;
     println!("{}", folder.to_str().unwrap());
 
+    let vswhere = vswhere()?;
+    println!("{}", vswhere.to_str().unwrap());
+
+    let install_path = install_path()?;
+    println!("{}", install_path.to_str().unwrap());
+
     let wc = WNDCLASSEXW {
         lpszClassName: w!("window"),
         cbSize: size_of::<WNDCLASSEXW>() as u32,
