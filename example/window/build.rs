@@ -1,6 +1,5 @@
-use std::{env, error::Error, path::PathBuf, process::Command};
-
 use pane::resource_compiler;
+use std::{env, error::Error, path::PathBuf, process::Command};
 
 fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo::rustc-link-arg-bins=/WX");

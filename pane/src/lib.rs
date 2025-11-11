@@ -1,12 +1,12 @@
 use serde::Serialize;
-use std::os::windows::ffi::OsStringExt;
-use std::path::PathBuf;
 use std::process::{Command, ExitCode};
-use std::{ffi::OsString, os::windows::process::CommandExt};
-use windows::Win32::Foundation::GetLastError;
-use windows::Win32::System::Threading::CREATE_NO_WINDOW;
-use windows::Win32::UI::WindowsAndMessaging::TranslateMessage;
-use windows::core::Error;
+use std::{
+    ffi::OsString, os::windows::ffi::OsStringExt, os::windows::process::CommandExt, path::PathBuf,
+};
+use windows::Win32::{
+    Foundation::GetLastError, System::Threading::CREATE_NO_WINDOW,
+    UI::WindowsAndMessaging::TranslateMessage,
+};
 use windows::{
     Win32::{
         Foundation::{HANDLE, HINSTANCE, HMODULE},
@@ -20,7 +20,7 @@ use windows::{
         },
         UI::WindowsAndMessaging::{DispatchMessageW, GetMessageW, MSG},
     },
-    core::{GUID, PCWSTR, PWSTR, Result},
+    core::{Error, GUID, PCWSTR, PWSTR, Result},
 };
 
 #[derive(Serialize)]
