@@ -10,23 +10,23 @@ use windows::{
     core::*,
 };
 
-fn main() -> ExitCode {
-    let folder = known_folder(FOLDERID_LocalAppData, None).unwrap();
+fn main() -> Result<ExitCode> {
+    let folder = known_folder(FOLDERID_LocalAppData, None)?;
     println!("{}", folder.to_str().unwrap());
 
-    let vswhere = vswhere().unwrap();
+    let vswhere = vswhere()?;
     println!("{}", vswhere.to_str().unwrap());
 
-    let install_path = install_path().unwrap();
+    let install_path = install_path()?;
     println!("{}", install_path.to_str().unwrap());
 
-    let winsdk_bat = winsdk_bat().unwrap();
+    let winsdk_bat = winsdk_bat()?;
     println!("{}", winsdk_bat.to_str().unwrap());
 
-    let windows_kit = windows_kit("x64").unwrap();
+    let windows_kit = windows_kit("x64")?;
     println!("{}", windows_kit.to_str().unwrap());
 
-    let rc = resource_compiler("x64").unwrap();
+    let rc = resource_compiler("x64")?;
     println!("{}", rc.to_str().unwrap());
 
     let wc = WNDCLASSEXW {

@@ -2,8 +2,10 @@ use std::os::windows::ffi::OsStringExt;
 use std::path::PathBuf;
 use std::process::{Command, ExitCode};
 use std::{ffi::OsString, os::windows::process::CommandExt};
+use windows::Win32::Foundation::GetLastError;
 use windows::Win32::System::Threading::CREATE_NO_WINDOW;
 use windows::Win32::UI::WindowsAndMessaging::TranslateMessage;
+use windows::core::Error;
 use windows::{
     Win32::{
         Foundation::{HANDLE, HINSTANCE, HMODULE},
@@ -29,12 +31,15 @@ impl PwstrExt for PWSTR {
     }
 }
 
-pub fn message_loop() -> ExitCode {
+pub fn message_loop() -> Result<ExitCode> {
     let mut msg = MSG::default();
 
     loop {
         match unsafe { GetMessageW(&mut msg, None, 0, 0) }.0 {
-            -1 => return ExitCode::FAILURE,
+            -1 => {
+                let last_error = unsafe { GetLastError() };
+                return Err(Error::from_hresult(last_error.into()));
+            }
             0 => break,
             _ => unsafe {
                 let _ = TranslateMessage(&msg);
@@ -43,7 +48,7 @@ pub fn message_loop() -> ExitCode {
         }
     }
 
-    ExitCode::from(msg.wParam.0.try_into().unwrap_or(0))
+    Ok(ExitCode::from(msg.wParam.0.try_into().unwrap_or(0)))
 }
 
 pub fn get_instance() -> Result<HINSTANCE> {
