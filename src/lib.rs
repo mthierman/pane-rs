@@ -1,12 +1,11 @@
 use std::os::windows::ffi::OsStringExt;
 use std::path::PathBuf;
 use std::process::Command;
-use std::{env, ffi::OsString, os::windows::process::CommandExt};
+use std::{ffi::OsString, os::windows::process::CommandExt};
 use windows::Win32::System::Threading::CREATE_NO_WINDOW;
-use windows::core::Error;
 use windows::{
     Win32::{
-        Foundation::{E_FAIL, HANDLE, HINSTANCE, HMODULE},
+        Foundation::{HANDLE, HINSTANCE, HMODULE},
         System::LibraryLoader::{
             GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
             GetModuleHandleExW,
@@ -151,37 +150,14 @@ pub fn compile_resource(arch: &str, rc_file: PathBuf, out_dir: PathBuf) -> Resul
     Ok(())
 }
 
-// pub fn compile_resource(rc_file: PathBuf) {
-//     let rc = resource_compiler();
-
-//     if rc_file.exists() {
-//         // let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-//         let out_dir = out_dir();
-
-//         let res_file = out_dir.join(format!(
-//             "{}.res",
-//             rc_file.file_stem().unwrap().to_str().unwrap()
-//         ));
-
-//         Command::new(&rc)
-//             .args(["/fo", res_file.to_str().unwrap(), rc_file.to_str().unwrap()])
-//             .status()
-//             .unwrap();
-
-//         println!("cargo::rustc-link-arg-bins={}", res_file.to_str().unwrap());
-//     } else {
-//         println!("cargo:warning={} not found", rc_file.display());
-//     }
-// }
-
-// pub fn embed_manifest(path: PathBuf) {
-//     if !path.exists() {
-//         println!("cargo:warning={} not found", path.display());
-//     } else {
-//         println!("cargo::rustc-link-arg-bins=/MANIFEST:EMBED");
-//         println!(
-//             "cargo::rustc-link-arg-bins=/MANIFESTINPUT:{}",
-//             path.to_str().unwrap()
-//         );
-//     }
-// }
+pub fn embed_manifest(path: PathBuf) {
+    if !path.exists() {
+        println!("cargo:warning={} not found", path.display());
+    } else {
+        println!("cargo::rustc-link-arg-bins=/MANIFEST:EMBED");
+        println!(
+            "cargo::rustc-link-arg-bins=/MANIFESTINPUT:{}",
+            path.to_str().unwrap()
+        );
+    }
+}
