@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use std::process::Command;
 use windows::{
     Win32::{
-        Foundation::{E_FAIL, HANDLE, HINSTANCE, HMODULE},
+        Foundation::{HANDLE, HINSTANCE, HMODULE},
         System::LibraryLoader::{
             GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
             GetModuleHandleExW,
@@ -13,7 +13,7 @@ use windows::{
             FOLDERID_ProgramFilesX86, KF_FLAG_DONT_VERIFY, KNOWN_FOLDER_FLAG, SHGetKnownFolderPath,
         },
     },
-    core::{Error, GUID, HRESULT, PCWSTR, PWSTR, Result},
+    core::{GUID, PCWSTR, PWSTR, Result},
 };
 
 trait PwstrExt {
