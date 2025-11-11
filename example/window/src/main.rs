@@ -2,8 +2,8 @@
 use pane::*;
 use std::process::ExitCode;
 use windows::{
-    core::*,
     Win32::{Foundation::*, Graphics::Gdi::*, UI::WindowsAndMessaging::*},
+    core::*,
 };
 
 fn main() -> Result<ExitCode> {
