@@ -25,15 +25,14 @@ pub fn get_instance() -> Result<HINSTANCE> {
 }
 
 pub fn known_folder(id: &GUID, flag: Option<KNOWN_FOLDER_FLAG>) -> Result<PathBuf> {
-    let known_folder = unsafe {
-        SHGetKnownFolderPath(
-            id,
-            flag.unwrap_or(KNOWN_FOLDER_FLAG(0)),
-            Some(HANDLE::default()),
-        )?
-    };
-
-    Ok(PathBuf::from(OsString::from_wide(unsafe {
-        known_folder.as_wide()
-    })))
+    Ok({
+        let path = unsafe {
+            SHGetKnownFolderPath(
+                id,
+                flag.unwrap_or(KNOWN_FOLDER_FLAG(0)),
+                Some(HANDLE::default()),
+            )?
+        };
+        PathBuf::from(OsString::from_wide(unsafe { path.as_wide() }))
+    })
 }
