@@ -26,6 +26,9 @@ fn main() -> Result<()> {
     let windows_kit = windows_kit("x64")?;
     println!("{}", windows_kit.to_str().unwrap());
 
+    let rc = resource_compiler("x64")?;
+    println!("{}", rc.to_str().unwrap());
+
     let wc = WNDCLASSEXW {
         lpszClassName: w!("window"),
         cbSize: size_of::<WNDCLASSEXW>() as u32,

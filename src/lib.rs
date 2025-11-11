@@ -108,9 +108,14 @@ pub fn windows_kit(arch: &str) -> Result<PathBuf> {
     ))
 }
 
-// pub fn resource_compiler() -> PathBuf {
-//     windows_kit("x64").join("x64").join("rc.exe")
-// }
+pub fn resource_compiler(arch: &str) -> Result<PathBuf> {
+    let mut buffer = windows_kit(arch)?;
+    let components = [arch, "rc.exe"];
+
+    components.iter().for_each(|c| buffer.push(c));
+
+    Ok(buffer)
+}
 
 // pub fn compile_resource(rc_file: PathBuf) {
 //     let rc = resource_compiler();
