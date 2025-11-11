@@ -6,26 +6,38 @@ use std::{
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
-    // let data = env::current_dir()?.join("data");
-    // let rc = data.join("app.rc");
-    // let manifest = data.join("app.manifest");
-    // let out_dir = PathBuf::from(env::var("OUT_DIR")?);
-
     if env::var("TARGET")?.ends_with("windows-msvc") {
-        let manifest = Path::new("data/app.manifest").canonicalize().unwrap();
-        println!("cargo:rustc-link-arg-bins=/MANIFEST:EMBED");
-        println!(
-            "cargo:rustc-link-arg-bins=/MANIFESTINPUT:{}",
-            manifest.display()
-        );
-        println!("cargo:rerun-if-changed=data/app.manifest");
+        let manifest = env::current_dir()?
+            .join("data")
+            .join("app.manifest")
+            .canonicalize()?;
+
+        if !manifest.exists() {
+            println!("cargo:warning={} not found", manifest.display());
+        } else if let Some(path) = manifest.to_str() {
+            println!("cargo:rustc-link-arg-bins=/MANIFEST:EMBED");
+            println!("cargo:rustc-link-arg-bins=/MANIFESTINPUT:{}", path);
+        } else {
+            println!(
+                "cargo:warning=Manifest path is not valid UTF-8: {:?}",
+                manifest
+            );
+        }
+
+        // let out_dir = PathBuf::from(env::var("OUT_DIR")?);
+        // let resource_file = data.join("app.rc").canonicalize()?;
+
+        // println!("cargo:rustc-link-arg-bins=/MANIFEST:EMBED");
+        // println!(
+        //     "cargo:rustc-link-arg-bins=/MANIFESTINPUT:{}",
+        //     manifest.display()
+        // );
+        // println!("cargo:rerun-if-changed=data/app.manifest");
     }
 
-    println!("cargo:rerun-if-changed=build.rs");
-    let _ = embed_resource::compile("data/app.rc", embed_resource::NONE);
-
+    // println!("cargo:rerun-if-changed=build.rs");
+    // let _ = embed_resource::compile("data/app.rc", embed_resource::NONE);
     // compile_resource(rc);
-    // embed_manifest(manifest);
 
     Ok(())
 }
