@@ -34,9 +34,7 @@ pub fn message_loop() -> ExitCode {
     let mut msg = MSG::default();
 
     loop {
-        let result = unsafe { GetMessageW(&mut msg, None, 0, 0) };
-
-        match result.0 {
+        match unsafe { GetMessageW(&mut msg, None, 0, 0) }.0 {
             -1 => return ExitCode::FAILURE,
             0 => break,
             _ => unsafe {
