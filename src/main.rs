@@ -1,3 +1,4 @@
+use color::parse_color;
 use pane_rs::{debug_println, get_instance};
 use windows::{
     Win32::{Foundation::*, Graphics::Gdi::*, UI::WindowsAndMessaging::*},
@@ -6,6 +7,9 @@ use windows::{
 
 fn main() -> Result<()> {
     debug_println!("Hello, {}! The answer is {}", "world", 42);
+
+    let color = parse_color("#00FF00");
+    debug_println!("{}", color.unwrap().to_string());
 
     let wc = WNDCLASSEXW {
         lpszClassName: w!("window"),
