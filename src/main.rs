@@ -1,6 +1,7 @@
 #![windows_subsystem = "windows"]
 use pane_rs::*;
-use std::process::ExitCode;
+use serde::Serialize;
+use std::{path::PathBuf, process::ExitCode};
 use windows::{
     Win32::{
         Foundation::*,
@@ -10,24 +11,41 @@ use windows::{
     core::*,
 };
 
+#[derive(Serialize)]
+struct Paths {
+    local_app_data: PathBuf,
+    vswhere: PathBuf,
+    install_path: PathBuf,
+    winsdk_bat: PathBuf,
+    windows_kit: PathBuf,
+    resource_compiler: PathBuf,
+}
+
+impl Paths {
+    pub fn new() -> Result<Self> {
+        Ok(Self {
+            local_app_data: known_folder(FOLDERID_LocalAppData, None)?,
+            vswhere: vswhere()?,
+            install_path: install_path()?,
+            winsdk_bat: winsdk_bat()?,
+            windows_kit: windows_kit("x64")?,
+            resource_compiler: resource_compiler("x64")?,
+        })
+    }
+}
+
 fn main() -> Result<ExitCode> {
-    let folder = known_folder(FOLDERID_LocalAppData, None)?;
-    println!("{}", folder.to_str().unwrap());
+    let paths = Paths::new()?;
 
-    let vswhere = vswhere()?;
-    println!("{}", vswhere.to_str().unwrap());
+    let json = serde_json::to_string_pretty(&paths).unwrap();
+    println!("{}", json);
 
-    let install_path = install_path()?;
-    println!("{}", install_path.to_str().unwrap());
-
-    let winsdk_bat = winsdk_bat()?;
-    println!("{}", winsdk_bat.to_str().unwrap());
-
-    let windows_kit = windows_kit("x64")?;
-    println!("{}", windows_kit.to_str().unwrap());
-
-    let rc = resource_compiler("x64")?;
-    println!("{}", rc.to_str().unwrap());
+    // println!("{}", paths.local_app_data.to_str().unwrap());
+    // println!("{}", vswhere.to_str().unwrap());
+    // println!("{}", install_path.to_str().unwrap());
+    // println!("{}", winsdk_bat.to_str().unwrap());
+    // println!("{}", windows_kit.to_str().unwrap());
+    // println!("{}", rc.to_str().unwrap());
 
     let wc = WNDCLASSEXW {
         lpszClassName: w!("window"),
