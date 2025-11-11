@@ -6,11 +6,10 @@ use std::{
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let data = env::current_dir()?.join("data");
-    let rc = data.join("app.rc");
-    let manifest = data.join("app.manifest");
-
-    let out_dir = PathBuf::from(env::var("OUT_DIR")?);
+    // let data = env::current_dir()?.join("data");
+    // let rc = data.join("app.rc");
+    // let manifest = data.join("app.manifest");
+    // let out_dir = PathBuf::from(env::var("OUT_DIR")?);
 
     if env::var("TARGET")?.ends_with("windows-msvc") {
         let manifest = Path::new("data/app.manifest").canonicalize().unwrap();
