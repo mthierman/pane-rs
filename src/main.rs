@@ -23,6 +23,9 @@ fn main() -> Result<()> {
     let winsdk_bat = winsdk_bat()?;
     println!("{}", winsdk_bat.to_str().unwrap());
 
+    let windows_kit = windows_kit("x64")?;
+    println!("{}", windows_kit.to_str().unwrap());
+
     let wc = WNDCLASSEXW {
         lpszClassName: w!("window"),
         cbSize: size_of::<WNDCLASSEXW>() as u32,

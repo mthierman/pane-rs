@@ -84,6 +84,30 @@ pub fn winsdk_bat() -> Result<PathBuf> {
     Ok(buffer)
 }
 
+pub fn windows_kit(arch: &str) -> Result<PathBuf> {
+    Ok(PathBuf::from(
+        String::from_utf8(
+            Command::new("cmd")
+                .creation_flags(CREATE_NO_WINDOW.0)
+                .envs([("VSCMD_ARG_HOST_ARCH", arch), ("VSCMD_ARG_TGT_ARCH", arch)])
+                .args([
+                    "/v:on",
+                    "/C",
+                    winsdk_bat()?.to_str().unwrap(),
+                    ">",
+                    "NUL",
+                    "&",
+                    "echo",
+                    "!WindowsSdkVerBinPath!",
+                ])
+                .output()?
+                .stdout,
+        )?
+        .trim()
+        .trim_end_matches(['\\', '/']),
+    ))
+}
+
 // pub fn windows_kit(arch: &str) -> PathBuf {
 //     let output = Command::new("cmd")
 //         .envs([("VSCMD_ARG_HOST_ARCH", arch), ("VSCMD_ARG_TGT_ARCH", arch)])
