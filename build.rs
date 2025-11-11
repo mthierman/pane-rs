@@ -12,7 +12,19 @@ fn main() -> Result<(), Box<dyn Error>> {
             .join("app.manifest")
             .canonicalize()?;
 
+        let icon = env::current_dir()?
+            .join("data")
+            .join("app.ico")
+            .canonicalize()?;
+
+        let resource_file = env::current_dir()?
+            .join("data")
+            .join("app.rc")
+            .canonicalize()?;
+
         println!("cargo:rerun-if-changed={}", manifest.display());
+        println!("cargo:rerun-if-changed={}", icon.display());
+        println!("cargo:rerun-if-changed={}", resource_file.display());
 
         if !manifest.exists() {
             println!("cargo:warning={} not found", manifest.display());
@@ -29,8 +41,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         let out_dir = PathBuf::from(env::var("OUT_DIR")?);
         let resource_file = data.join("app.rc").canonicalize()?;
     }
-
-    // println!("cargo:rerun-if-changed=build.rs");
     // let _ = embed_resource::compile("data/app.rc", embed_resource::NONE);
     // compile_resource(rc);
 
