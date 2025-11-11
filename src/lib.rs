@@ -1,12 +1,8 @@
-use std::ffi::{OsString, c_void};
+use std::ffi::OsString;
 use std::os::windows::ffi::OsStringExt;
 use std::path::PathBuf;
 use windows::{
-    Win32::{Foundation::HANDLE, UI::Shell::*},
-    core::GUID,
-};
-use windows::{
-    Win32::{Foundation::*, System::LibraryLoader::*},
+    Win32::{Foundation::*, System::LibraryLoader::*, UI::Shell::*},
     core::*,
 };
 
