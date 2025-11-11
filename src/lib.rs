@@ -122,12 +122,6 @@ pub fn compile_resource(arch: &str, rc_file: PathBuf, out_dir: PathBuf) -> Resul
     let rc = resource_compiler(arch)?;
 
     if rc_file.exists() {
-        // out_dir for caller:
-        // let out_dir = PathBuf::from(
-        //     env::var("OUT_DIR")
-        //         .map_err(|_| Error::new(E_FAIL, "OUT_DIR environment variable is not set"))?,
-        // );
-
         let res_file = out_dir.join(format!(
             "{}.res",
             rc_file

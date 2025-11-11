@@ -1,6 +1,6 @@
 // use std::env;
 // extern crate embed_resource;
-use std::error::Error;
+use std::{env, error::Error, path::PathBuf};
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Old one
@@ -25,6 +25,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     // tools::compile_resource(rc);
     // let manifest = data.join("app.manifest");
     // tools::embed_manifest(manifest);
+
+    // out_dir for caller:
+    // let out_dir = PathBuf::from(env::var("OUT_DIR")?);
 
     Ok(())
 }
