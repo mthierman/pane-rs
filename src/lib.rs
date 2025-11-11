@@ -1,11 +1,12 @@
 use std::os::windows::ffi::OsStringExt;
 use std::path::PathBuf;
 use std::process::Command;
-use std::{ffi::OsString, os::windows::process::CommandExt};
+use std::{env, ffi::OsString, os::windows::process::CommandExt};
 use windows::Win32::System::Threading::CREATE_NO_WINDOW;
+use windows::core::Error;
 use windows::{
     Win32::{
-        Foundation::{HANDLE, HINSTANCE, HMODULE},
+        Foundation::{E_FAIL, HANDLE, HINSTANCE, HMODULE},
         System::LibraryLoader::{
             GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
             GetModuleHandleExW,
@@ -115,6 +116,45 @@ pub fn resource_compiler(arch: &str) -> Result<PathBuf> {
     components.iter().for_each(|c| buffer.push(c));
 
     Ok(buffer)
+}
+
+pub fn compile_resource(arch: &str, rc_file: PathBuf, out_dir: PathBuf) -> Result<()> {
+    let rc = resource_compiler(arch)?;
+
+    if rc_file.exists() {
+        // out_dir for caller:
+        // let out_dir = PathBuf::from(
+        //     env::var("OUT_DIR")
+        //         .map_err(|_| Error::new(E_FAIL, "OUT_DIR environment variable is not set"))?,
+        // );
+
+        let res_file = out_dir.join(format!(
+            "{}.res",
+            rc_file
+                .file_stem()
+                .unwrap_or_default()
+                .to_str()
+                .unwrap_or_default()
+        ));
+
+        Command::new(&rc)
+            .args([
+                "/fo",
+                res_file.to_str().unwrap_or_default(),
+                rc_file.to_str().unwrap_or_default(),
+            ])
+            .status()
+            .unwrap();
+
+        println!(
+            "cargo::rustc-link-arg-bins={}",
+            res_file.to_str().unwrap_or_default()
+        );
+    } else {
+        println!("cargo:warning={} not found", rc_file.display());
+    }
+
+    Ok(())
 }
 
 // pub fn compile_resource(rc_file: PathBuf) {
