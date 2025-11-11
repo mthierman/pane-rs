@@ -1,6 +1,6 @@
 #![windows_subsystem = "windows"]
-
 use pane_rs::*;
+use std::process::ExitCode;
 use windows::{
     Win32::{
         Foundation::*,
@@ -10,30 +10,30 @@ use windows::{
     core::*,
 };
 
-fn main() -> Result<()> {
-    let folder = known_folder(FOLDERID_LocalAppData, None)?;
+fn main() -> ExitCode {
+    let folder = known_folder(FOLDERID_LocalAppData, None).unwrap();
     println!("{}", folder.to_str().unwrap());
 
-    let vswhere = vswhere()?;
+    let vswhere = vswhere().unwrap();
     println!("{}", vswhere.to_str().unwrap());
 
-    let install_path = install_path()?;
+    let install_path = install_path().unwrap();
     println!("{}", install_path.to_str().unwrap());
 
-    let winsdk_bat = winsdk_bat()?;
+    let winsdk_bat = winsdk_bat().unwrap();
     println!("{}", winsdk_bat.to_str().unwrap());
 
-    let windows_kit = windows_kit("x64")?;
+    let windows_kit = windows_kit("x64").unwrap();
     println!("{}", windows_kit.to_str().unwrap());
 
-    let rc = resource_compiler("x64")?;
+    let rc = resource_compiler("x64").unwrap();
     println!("{}", rc.to_str().unwrap());
 
     let wc = WNDCLASSEXW {
         lpszClassName: w!("window"),
         cbSize: size_of::<WNDCLASSEXW>() as u32,
-        hCursor: unsafe { LoadCursorW(None, IDC_ARROW)? },
-        hInstance: get_instance()?,
+        hCursor: unsafe { LoadCursorW(None, IDC_ARROW).unwrap() },
+        hInstance: get_instance().unwrap(),
         lpfnWndProc: Some(wndproc),
         ..Default::default()
     };
@@ -55,18 +55,11 @@ fn main() -> Result<()> {
             None,
             get_instance().ok(),
             None,
-        )?;
+        )
+        .unwrap();
     }
 
-    let mut msg = MSG::default();
-
-    unsafe {
-        while GetMessageW(&mut msg, None, 0, 0).into() {
-            DispatchMessageW(&msg);
-        }
-    }
-
-    Ok(())
+    message_loop()
 }
 
 extern "system" fn wndproc(window: HWND, msg: u32, wparam: WPARAM, lparam: LPARAM) -> LRESULT {

@@ -1,8 +1,10 @@
 use std::os::windows::ffi::OsStringExt;
 use std::path::PathBuf;
-use std::process::Command;
+use std::process::{Command, ExitCode};
 use std::{ffi::OsString, os::windows::process::CommandExt};
+use windows::Win32::Foundation::GetLastError;
 use windows::Win32::System::Threading::CREATE_NO_WINDOW;
+use windows::Win32::UI::WindowsAndMessaging::TranslateMessage;
 use windows::{
     Win32::{
         Foundation::{HANDLE, HINSTANCE, HMODULE},
@@ -13,8 +15,9 @@ use windows::{
         UI::Shell::{
             FOLDERID_ProgramFilesX86, KF_FLAG_DONT_VERIFY, KNOWN_FOLDER_FLAG, SHGetKnownFolderPath,
         },
+        UI::WindowsAndMessaging::{DispatchMessageW, GetMessageW, MSG},
     },
-    core::{GUID, PCWSTR, PWSTR, Result},
+    core::{Error, GUID, PCWSTR, PWSTR, Result},
 };
 
 trait PwstrExt {
@@ -25,6 +28,25 @@ impl PwstrExt for PWSTR {
     fn to_pathbuf(&self) -> PathBuf {
         PathBuf::from(OsString::from_wide(unsafe { self.as_wide() }))
     }
+}
+
+pub fn message_loop() -> ExitCode {
+    let mut msg = MSG::default();
+
+    loop {
+        let result = unsafe { GetMessageW(&mut msg, None, 0, 0) };
+
+        match result.0 {
+            -1 => return ExitCode::FAILURE,
+            0 => break,
+            _ => unsafe {
+                let _ = TranslateMessage(&msg);
+                let _ = DispatchMessageW(&msg);
+            },
+        }
+    }
+
+    ExitCode::from(msg.wParam.0.try_into().unwrap_or(0))
 }
 
 pub fn get_instance() -> Result<HINSTANCE> {
