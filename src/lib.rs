@@ -2,7 +2,6 @@ use std::os::windows::ffi::OsStringExt;
 use std::path::PathBuf;
 use std::process::{Command, ExitCode};
 use std::{ffi::OsString, os::windows::process::CommandExt};
-use windows::Win32::Foundation::GetLastError;
 use windows::Win32::System::Threading::CREATE_NO_WINDOW;
 use windows::Win32::UI::WindowsAndMessaging::TranslateMessage;
 use windows::{
@@ -17,7 +16,7 @@ use windows::{
         },
         UI::WindowsAndMessaging::{DispatchMessageW, GetMessageW, MSG},
     },
-    core::{Error, GUID, PCWSTR, PWSTR, Result},
+    core::{GUID, PCWSTR, PWSTR, Result},
 };
 
 trait PwstrExt {
