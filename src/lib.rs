@@ -1,13 +1,30 @@
-use std::ffi::c_void;
+use std::ffi::{OsStr, c_void};
+use std::iter;
+use std::os::windows::ffi::OsStrExt;
 use std::{env, path::PathBuf, process::Command};
 use windows::{
     Win32::{Foundation::HANDLE, UI::Shell::*},
     core::GUID,
 };
 use windows::{
-    Win32::{Foundation::*, System::LibraryLoader::*},
+    Win32::{
+        Foundation::*, System::Diagnostics::Debug::OutputDebugStringW, System::LibraryLoader::*,
+    },
     core::*,
 };
+
+pub fn __debug_println_impl(s: &str) {
+    let wide: Vec<u16> = OsStr::new(s).encode_wide().chain(iter::once(0)).collect();
+    let ptr = PCWSTR(wide.as_ptr());
+    unsafe { OutputDebugStringW(ptr) };
+}
+
+#[macro_export]
+macro_rules! debug_println {
+    ($($arg:tt)*) => {{
+        $crate::__debug_println_impl(&format!($($arg)*));
+    }};
+}
 
 pub fn get_instance() -> Result<HINSTANCE> {
     let mut hmodule = HMODULE::default();

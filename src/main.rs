@@ -1,10 +1,12 @@
-use pane_rs::get_instance;
+use pane_rs::{debug_println, get_instance};
 use windows::{
     Win32::{Foundation::*, Graphics::Gdi::*, UI::WindowsAndMessaging::*},
     core::*,
 };
 
 fn main() -> Result<()> {
+    debug_println!("Hello, {}! The answer is {}", "world", 42);
+
     let wc = WNDCLASSEXW {
         lpszClassName: w!("window"),
         cbSize: size_of::<WNDCLASSEXW>() as u32,
