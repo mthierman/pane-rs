@@ -2,8 +2,15 @@ use std::ffi::OsString;
 use std::os::windows::ffi::OsStringExt;
 use std::path::PathBuf;
 use windows::{
-    Win32::{Foundation::*, System::LibraryLoader::*, UI::Shell::*},
-    core::*,
+    Win32::{
+        Foundation::{HANDLE, HINSTANCE, HMODULE},
+        System::LibraryLoader::{
+            GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+            GetModuleHandleExW,
+        },
+        UI::Shell::{KNOWN_FOLDER_FLAG, SHGetKnownFolderPath},
+    },
+    core::{GUID, PCWSTR, PWSTR, Result},
 };
 
 trait PwstrExt {
