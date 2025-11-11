@@ -108,25 +108,6 @@ pub fn windows_kit(arch: &str) -> Result<PathBuf> {
     ))
 }
 
-// pub fn windows_kit(arch: &str) -> PathBuf {
-//     let output = Command::new("cmd")
-//         .envs([("VSCMD_ARG_HOST_ARCH", arch), ("VSCMD_ARG_TGT_ARCH", arch)])
-//         .args([
-//             "/v:on",
-//             "/C",
-//             winsdk_bat().to_str().unwrap(),
-//             ">",
-//             "NUL",
-//             "&",
-//             "echo",
-//             "!WindowsSdkVerBinPath!",
-//         ])
-//         .output()
-//         .unwrap();
-
-//     PathBuf::from(String::from_utf8(output.stdout).unwrap().trim())
-// }
-
 // pub fn resource_compiler() -> PathBuf {
 //     windows_kit("x64").join("x64").join("rc.exe")
 // }
