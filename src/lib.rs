@@ -62,27 +62,16 @@ pub fn vswhere() -> Result<PathBuf> {
 }
 
 pub fn install_path() -> Result<PathBuf> {
-    let result = Command::new(vswhere()?)
-        .args(["-property", "resolvedInstallationPath"])
-        .output()?
-        .stdout;
-
-    Ok(PathBuf::from(String::from_utf8(result)?.trim()))
+    Ok(PathBuf::from(
+        String::from_utf8(
+            Command::new(vswhere()?)
+                .args(["-property", "resolvedInstallationPath"])
+                .output()?
+                .stdout,
+        )?
+        .trim(),
+    ))
 }
-
-// pub fn install_path() -> PathBuf {
-//     PathBuf::from(
-//         String::from_utf8(
-//             Command::new(vswhere())
-//                 .args(["-property", "resolvedInstallationPath"])
-//                 .output()
-//                 .unwrap()
-//                 .stdout,
-//         )
-//         .unwrap()
-//         .trim(),
-//     )
-// }
 
 // pub fn winsdk_bat() -> PathBuf {
 //     install_path()
