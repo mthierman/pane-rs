@@ -20,6 +20,9 @@ fn main() -> Result<()> {
     let install_path = install_path()?;
     println!("{}", install_path.to_str().unwrap());
 
+    let winsdk_bat = winsdk_bat()?;
+    println!("{}", winsdk_bat.to_str().unwrap());
+
     let wc = WNDCLASSEXW {
         lpszClassName: w!("window"),
         cbSize: size_of::<WNDCLASSEXW>() as u32,

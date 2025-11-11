@@ -1,7 +1,8 @@
-use std::ffi::OsString;
 use std::os::windows::ffi::OsStringExt;
 use std::path::PathBuf;
 use std::process::Command;
+use std::{ffi::OsString, os::windows::process::CommandExt};
+use windows::Win32::System::Threading::CREATE_NO_WINDOW;
 use windows::{
     Win32::{
         Foundation::{HANDLE, HINSTANCE, HMODULE},
@@ -65,6 +66,7 @@ pub fn install_path() -> Result<PathBuf> {
     Ok(PathBuf::from(
         String::from_utf8(
             Command::new(vswhere()?)
+                .creation_flags(CREATE_NO_WINDOW.0)
                 .args(["-property", "resolvedInstallationPath"])
                 .output()?
                 .stdout,
@@ -73,14 +75,14 @@ pub fn install_path() -> Result<PathBuf> {
     ))
 }
 
-// pub fn winsdk_bat() -> PathBuf {
-//     install_path()
-//         .join("Common7")
-//         .join("Tools")
-//         .join("vsdevcmd")
-//         .join("core")
-//         .join("winsdk.bat")
-// }
+pub fn winsdk_bat() -> Result<PathBuf> {
+    let mut buffer = install_path()?;
+    let components = ["Common7", "Tools", "vsdevcmd", "core", "winsdk.bat"];
+
+    components.iter().for_each(|c| buffer.push(c));
+
+    Ok(buffer)
+}
 
 // pub fn windows_kit(arch: &str) -> PathBuf {
 //     let output = Command::new("cmd")
