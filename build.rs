@@ -12,6 +12,8 @@ fn main() -> Result<(), Box<dyn Error>> {
             .join("app.manifest")
             .canonicalize()?;
 
+        println!("cargo:rerun-if-changed={}", manifest.display());
+
         if !manifest.exists() {
             println!("cargo:warning={} not found", manifest.display());
         } else if let Some(path) = manifest.to_str() {
@@ -24,15 +26,8 @@ fn main() -> Result<(), Box<dyn Error>> {
             );
         }
 
-        // let out_dir = PathBuf::from(env::var("OUT_DIR")?);
-        // let resource_file = data.join("app.rc").canonicalize()?;
-
-        // println!("cargo:rustc-link-arg-bins=/MANIFEST:EMBED");
-        // println!(
-        //     "cargo:rustc-link-arg-bins=/MANIFESTINPUT:{}",
-        //     manifest.display()
-        // );
-        // println!("cargo:rerun-if-changed=data/app.manifest");
+        let out_dir = PathBuf::from(env::var("OUT_DIR")?);
+        let resource_file = data.join("app.rc").canonicalize()?;
     }
 
     // println!("cargo:rerun-if-changed=build.rs");
