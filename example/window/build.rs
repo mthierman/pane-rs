@@ -1,4 +1,4 @@
-use pane::resource_compiler;
+use pane::*;
 use std::{env, error::Error, path::PathBuf, process::Command};
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -15,24 +15,14 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         let data = manifest_dir.join("data");
 
-        let data_manifest = data.join("app.manifest").canonicalize()?;
-        println!("cargo:rerun-if-changed={}", data_manifest.display());
         let data_icon = data.join("app.ico").canonicalize()?;
         println!("cargo:rerun-if-changed={}", data_icon.display());
         let data_resource = data.join("app.rc").canonicalize()?;
         println!("cargo:rerun-if-changed={}", data_resource.display());
 
-        if !data_manifest.exists() {
-            println!("cargo:warning={} not found", data_manifest.display());
-        } else if let Some(path) = data_manifest.to_str() {
-            println!("cargo:rustc-link-arg-bins=/MANIFEST:EMBED");
-            println!("cargo:rustc-link-arg-bins=/MANIFESTINPUT:{}", path);
-        } else {
-            println!(
-                "cargo:warning=Manifest file is not valid UTF-8: {:?}",
-                data_manifest
-            );
-        }
+        let data_manifest = data.join("app.manifest").canonicalize()?;
+        println!("cargo:rerun-if-changed={}", data_manifest.display());
+        embed_manifest(data_manifest);
 
         if !data_resource.exists() {
             println!("cargo:warning={} not found", data_resource.display());
