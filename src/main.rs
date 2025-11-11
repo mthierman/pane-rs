@@ -1,15 +1,17 @@
-use color::parse_color;
-use pane_rs::{debug_println, get_instance};
+use pane_rs::*;
 use windows::{
-    Win32::{Foundation::*, Graphics::Gdi::*, UI::WindowsAndMessaging::*},
+    Win32::{
+        Foundation::*,
+        Graphics::Gdi::*,
+        UI::{Shell::*, WindowsAndMessaging::*},
+    },
     core::*,
 };
 
 fn main() -> Result<()> {
-    debug_println!("Hello, {}! The answer is {}", "world", 42);
+    let folder = known_folder(&FOLDERID_LocalAppData, KNOWN_FOLDER_FLAG(0));
 
-    let color = parse_color("#00FF00");
-    debug_println!("{}", color.unwrap().to_string());
+    println!("{}", folder.unwrap().to_str().unwrap());
 
     let wc = WNDCLASSEXW {
         lpszClassName: w!("window"),
