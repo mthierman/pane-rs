@@ -1,6 +1,10 @@
 // use std::env;
 // extern crate embed_resource;
-use std::{env, error::Error, path::PathBuf};
+use std::{
+    env,
+    error::Error,
+    path::{Path, PathBuf},
+};
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Old one
@@ -28,6 +32,16 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // out_dir for caller:
     // let out_dir = PathBuf::from(env::var("OUT_DIR")?);
+
+    if env::var("TARGET")?.ends_with("windows-msvc") {
+        let manifest = Path::new("data/app.manifest").canonicalize().unwrap();
+        println!("cargo:rustc-link-arg-bins=/MANIFEST:EMBED");
+        println!(
+            "cargo:rustc-link-arg-bins=/MANIFESTINPUT:{}",
+            manifest.display()
+        );
+        println!("cargo:rerun-if-changed=data/app.manifest");
+    }
 
     Ok(())
 }
