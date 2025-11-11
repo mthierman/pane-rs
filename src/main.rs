@@ -9,7 +9,7 @@ use windows::{
 };
 
 fn main() -> Result<()> {
-    let folder = known_folder(&FOLDERID_LocalAppData, KNOWN_FOLDER_FLAG(0));
+    let folder = known_folder(&FOLDERID_LocalAppData, None);
 
     println!("{}", folder.unwrap().to_str().unwrap());
 
