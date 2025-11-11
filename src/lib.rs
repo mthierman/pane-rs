@@ -16,32 +16,18 @@ use windows::{
 pub fn debug_println(format_args: std::fmt::Arguments) {
     let s = format!("{format_args}\n");
     let wide: Vec<u16> = OsStr::new(&s).encode_wide().chain(iter::once(0)).collect();
-    unsafe { OutputDebugStringW(PCWSTR(wide.as_ptr())) };
+
+    unsafe {
+        OutputDebugStringW(PCWSTR(wide.as_ptr()));
+    }
 }
 
-/// Convenience wrapper for `format!` syntax
 #[macro_export]
 macro_rules! debug_println {
     ($($arg:tt)*) => {
-        $crate::debug_println(format_args!($($arg)*))
-    };
+        $crate::debug_println(format_args!($($arg)*));
+    }
 }
-
-// pub fn __debug_println_impl(s: &str) {
-//     let wide: Vec<u16> = OsStr::new(s).encode_wide().chain(iter::once(0)).collect();
-//     let ptr = PCWSTR(wide.as_ptr());
-
-//     unsafe {
-//         OutputDebugStringW(ptr);
-//     }
-// }
-
-// #[macro_export]
-// macro_rules! debug_println {
-//     ($($arg:tt)*) => {{
-//         $crate::__debug_println_impl(&format!($($arg)*));
-//     }}
-// }
 
 pub fn get_instance() -> Result<HINSTANCE> {
     let mut hmodule = HMODULE::default();
