@@ -10,6 +10,16 @@ use windows::{
     core::*,
 };
 
+trait PwstrExt {
+    fn to_pathbuf(&self) -> PathBuf;
+}
+
+impl PwstrExt for PWSTR {
+    fn to_pathbuf(&self) -> PathBuf {
+        PathBuf::from(OsString::from_wide(unsafe { self.as_wide() }))
+    }
+}
+
 pub fn get_instance() -> Result<HINSTANCE> {
     let mut hmodule = HMODULE::default();
 
@@ -24,15 +34,14 @@ pub fn get_instance() -> Result<HINSTANCE> {
     Ok(hmodule.into())
 }
 
-pub fn known_folder(id: &GUID, flag: Option<KNOWN_FOLDER_FLAG>) -> Result<PathBuf> {
-    Ok({
-        let path = unsafe {
-            SHGetKnownFolderPath(
-                id,
-                flag.unwrap_or(KNOWN_FOLDER_FLAG(0)),
-                Some(HANDLE::default()),
-            )?
-        };
-        PathBuf::from(OsString::from_wide(unsafe { path.as_wide() }))
-    })
+pub fn known_folder(id: GUID, flag: Option<KNOWN_FOLDER_FLAG>) -> Result<PathBuf> {
+    let buffer = unsafe {
+        SHGetKnownFolderPath(
+            &id,
+            flag.unwrap_or(KNOWN_FOLDER_FLAG(0)),
+            Some(HANDLE::default()),
+        )?
+    };
+
+    Ok(buffer.to_pathbuf())
 }

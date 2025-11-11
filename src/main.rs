@@ -9,9 +9,13 @@ use windows::{
 };
 
 fn main() -> Result<()> {
-    let folder = known_folder(&FOLDERID_LocalAppData, None)?;
+    let folder = known_folder(FOLDERID_LocalAppData, None)?;
 
-    println!("{}", folder.to_str().unwrap());
+    let s = folder
+        .to_str()
+        .ok_or_else(|| Error::new(E_FAIL, "Invalid UTF-8"))?;
+
+    println!("{}", s);
 
     let wc = WNDCLASSEXW {
         lpszClassName: w!("window"),
