@@ -1,6 +1,10 @@
 use std::{env, error::Error, path::PathBuf, process::Command};
 
 fn main() -> Result<(), Box<dyn Error>> {
+    if true {
+        return Ok(());
+    }
+
     if env::var("TARGET")?.ends_with("windows-msvc") {
         let out_dir = PathBuf::from(env::var("OUT_DIR")?);
 
