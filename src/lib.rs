@@ -16,14 +16,17 @@ use windows::{
 pub fn __debug_println_impl(s: &str) {
     let wide: Vec<u16> = OsStr::new(s).encode_wide().chain(iter::once(0)).collect();
     let ptr = PCWSTR(wide.as_ptr());
-    unsafe { OutputDebugStringW(ptr) };
+
+    unsafe {
+        OutputDebugStringW(ptr);
+    }
 }
 
 #[macro_export]
 macro_rules! debug_println {
     ($($arg:tt)*) => {{
         $crate::__debug_println_impl(&format!($($arg)*));
-    }};
+    }}
 }
 
 pub fn get_instance() -> Result<HINSTANCE> {
