@@ -1,3 +1,5 @@
+#![windows_subsystem = "windows"]
+
 use pane_rs::*;
 use windows::{
     Win32::{
