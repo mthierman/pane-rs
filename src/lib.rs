@@ -26,7 +26,7 @@ pub fn get_instance() -> Result<HINSTANCE> {
     unsafe {
         GetModuleHandleExW(
             GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT | GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
-            PCWSTR(get_instance as *const c_void as *const u16),
+            PCWSTR((get_instance as *const ()).cast()),
             &mut hmodule,
         )?;
     }
