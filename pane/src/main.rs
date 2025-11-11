@@ -1,5 +1,5 @@
 #![windows_subsystem = "windows"]
-use pane_rs::*;
+use pane::*;
 use std::process::ExitCode;
 use windows::{
     Win32::{Foundation::*, Graphics::Gdi::*, UI::WindowsAndMessaging::*},

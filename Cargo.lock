@@ -15,11 +15,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f52b00d39961fc5b2736ea853c9cc86238e165017a493d1d5c8eac6bdc4cc273"
 
 [[package]]
-name = "pane-rs"
+name = "pane"
 version = "0.0.0"
 dependencies = [
  "serde",
  "serde_json",
+ "tools",
  "windows",
 ]
 
@@ -99,6 +100,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "tools"
+version = "0.0.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "windows",
 ]
 
 [[package]]
