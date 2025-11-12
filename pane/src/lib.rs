@@ -1,12 +1,17 @@
 use serde::Serialize;
 use std::process::{Command, ExitCode};
 use std::{
-    ffi::OsString, os::windows::ffi::OsStringExt, os::windows::process::CommandExt, path::PathBuf,
+    ffi::OsString,
+    os::windows::ffi::OsStringExt,
+    os::windows::process::CommandExt,
+    path::{Path, PathBuf},
 };
+use windows::Win32::Foundation::ERROR_FILE_NOT_FOUND;
 use windows::Win32::{
     Foundation::GetLastError, System::Threading::CREATE_NO_WINDOW,
     UI::WindowsAndMessaging::TranslateMessage,
 };
+use windows::core::HRESULT;
 use windows::{
     Win32::{
         Foundation::{HANDLE, HINSTANCE, HMODULE},
@@ -166,10 +171,34 @@ pub fn resource_compiler(arch: &str) -> Result<PathBuf> {
     Ok(buffer)
 }
 
-pub fn compile_resource(arch: &str, rc_file: PathBuf, out_dir: PathBuf) -> Result<()> {
-    let rc = resource_compiler(arch)?;
+pub fn embed_manifest(path: &Path) -> Result<()> {
+    if !path.exists() {
+        println!("cargo:warning={} not found", path.display());
+        Err(Error::new(
+            ERROR_FILE_NOT_FOUND.to_hresult(),
+            "File not found",
+        ))
+    } else {
+        println!("cargo::rustc-link-arg-bins=/MANIFEST:EMBED");
+        println!(
+            "cargo::rustc-link-arg-bins=/MANIFESTINPUT:{}",
+            path.to_str().unwrap()
+        );
 
-    if rc_file.exists() {
+        Ok(())
+    }
+}
+
+pub fn compile_resource(arch: &str, rc_file: &Path, out_dir: &Path) -> Result<()> {
+    if !rc_file.exists() {
+        println!("cargo:warning={} not found", rc_file.display());
+        Err(Error::new(
+            ERROR_FILE_NOT_FOUND.to_hresult(),
+            "File not found",
+        ))
+    } else {
+        let rc = resource_compiler(arch)?;
+
         let res_file = out_dir.join(format!(
             "{}.res",
             rc_file
@@ -192,21 +221,7 @@ pub fn compile_resource(arch: &str, rc_file: PathBuf, out_dir: PathBuf) -> Resul
             "cargo::rustc-link-arg-bins={}",
             res_file.to_str().unwrap_or_default()
         );
-    } else {
-        println!("cargo:warning={} not found", rc_file.display());
-    }
 
-    Ok(())
-}
-
-pub fn embed_manifest(path: PathBuf) {
-    if !path.exists() {
-        println!("cargo:warning={} not found", path.display());
-    } else {
-        println!("cargo::rustc-link-arg-bins=/MANIFEST:EMBED");
-        println!(
-            "cargo::rustc-link-arg-bins=/MANIFESTINPUT:{}",
-            path.to_str().unwrap()
-        );
+        Ok(())
     }
 }

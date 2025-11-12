@@ -1,5 +1,5 @@
 use pane::*;
-use std::{env, error::Error, path::PathBuf, process::Command};
+use std::{env, error::Error, path::PathBuf};
 
 fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo::rustc-link-arg-bins=/WX");
@@ -22,28 +22,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         let data_manifest = data.join("app.manifest").canonicalize()?;
         println!("cargo:rerun-if-changed={}", data_manifest.display());
-        embed_manifest(data_manifest);
 
-        if !data_resource.exists() {
-            println!("cargo:warning={} not found", data_resource.display());
-        } else if let Some(stem) = data_resource.file_stem() {
-            let out_file = out_dir.join(stem).with_extension("res");
-
-            Command::new(resource_compiler("x64")?)
-                .args([
-                    "/fo",
-                    out_file.to_str().unwrap(),
-                    data_resource.to_str().unwrap(),
-                ])
-                .status()?;
-
-            println!("cargo::rustc-link-arg-bins={}", out_file.to_str().unwrap());
-        } else {
-            println!(
-                "cargo:warning=Resource file is not valid UTF-8: {:?}",
-                data_resource
-            );
-        }
+        embed_manifest(&data_manifest)?;
+        compile_resource("x64", &data_resource, &out_dir)?;
     }
 
     Ok(())
