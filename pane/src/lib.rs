@@ -11,7 +11,6 @@ use windows::Win32::{
     Foundation::GetLastError, System::Threading::CREATE_NO_WINDOW,
     UI::WindowsAndMessaging::TranslateMessage,
 };
-use windows::core::HRESULT;
 use windows::{
     Win32::{
         Foundation::{HANDLE, HINSTANCE, HMODULE},
