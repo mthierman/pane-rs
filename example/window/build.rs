@@ -1,31 +1,29 @@
 use pane::*;
-use std::{env, error::Error, path::PathBuf};
+use std::{env, path::PathBuf};
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() {
     println!("cargo::rustc-link-arg-bins=/WX");
 
-    if env::var("TARGET")?.ends_with("windows-msvc") {
-        let out_dir = PathBuf::from(env::var("OUT_DIR")?);
-        let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR")?)
+    if env::var("TARGET").unwrap().ends_with("windows-msvc") {
+        let root = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap())
             .parent()
             .unwrap()
             .parent()
             .unwrap()
             .to_path_buf();
 
-        let data = manifest_dir.join("data");
+        let data = root.join("data");
 
-        let data_icon = data.join("app.ico").canonicalize()?;
-        println!("cargo:rerun-if-changed={}", data_icon.display());
-        let data_resource = data.join("app.rc").canonicalize()?;
-        println!("cargo:rerun-if-changed={}", data_resource.display());
+        if !data.exists() {
+            println!("cargo:warning={} not found", data.display());
+        }
 
-        let data_manifest = data.join("app.manifest").canonicalize()?;
-        println!("cargo:rerun-if-changed={}", data_manifest.display());
-
-        embed_manifest(&data_manifest)?;
-        compile_resource("x64", &data_resource, &out_dir)?;
+        embed_manifest(&data.join("app.manifest")).unwrap();
+        compile_resource(
+            "x64",
+            &data.join("app.rc"),
+            &PathBuf::from(env::var("OUT_DIR").unwrap()),
+        )
+        .unwrap();
     }
-
-    Ok(())
 }
