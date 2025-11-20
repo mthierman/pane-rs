@@ -1,4 +1,3 @@
-use serde::Serialize;
 use std::process::{Command, ExitCode};
 use std::{
     ffi::OsString,
@@ -19,36 +18,12 @@ use windows::{
             GetModuleHandleExW,
         },
         UI::Shell::{
-            FOLDERID_LocalAppData, FOLDERID_ProgramFilesX86, KF_FLAG_DONT_VERIFY,
-            KNOWN_FOLDER_FLAG, SHGetKnownFolderPath,
+            FOLDERID_ProgramFilesX86, KF_FLAG_DONT_VERIFY, KNOWN_FOLDER_FLAG, SHGetKnownFolderPath,
         },
         UI::WindowsAndMessaging::{DispatchMessageW, GetMessageW, MSG},
     },
     core::{Error, GUID, PCWSTR, PWSTR, Result},
 };
-
-#[derive(Serialize)]
-pub struct SystemPaths {
-    local_app_data: PathBuf,
-    vswhere: PathBuf,
-    install_path: PathBuf,
-    winsdk_bat: PathBuf,
-    windows_kit: PathBuf,
-    resource_compiler: PathBuf,
-}
-
-impl SystemPaths {
-    pub fn new() -> Result<Self> {
-        Ok(Self {
-            local_app_data: known_folder(FOLDERID_LocalAppData, None)?,
-            vswhere: vswhere()?,
-            install_path: install_path()?,
-            winsdk_bat: winsdk_bat()?,
-            windows_kit: windows_kit("x64")?,
-            resource_compiler: resource_compiler("x64")?,
-        })
-    }
-}
 
 trait PwstrExt {
     fn to_pathbuf(&self) -> PathBuf;
