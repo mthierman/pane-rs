@@ -148,10 +148,7 @@ pub fn resource_compiler(arch: &str) -> Result<PathBuf> {
 pub fn embed_manifest(path: &Path) -> Result<()> {
     if !path.exists() {
         println!("cargo:warning={} not found", path.display());
-        Err(Error::new(
-            ERROR_FILE_NOT_FOUND.to_hresult(),
-            "File not found",
-        ))
+        Err(ERROR_FILE_NOT_FOUND.into())
     } else {
         println!("cargo::rustc-link-arg-bins=/MANIFEST:EMBED");
         println!(
@@ -163,37 +160,31 @@ pub fn embed_manifest(path: &Path) -> Result<()> {
     }
 }
 
-pub fn compile_resource(arch: &str, rc_file: &Path, out_dir: &Path) -> Result<()> {
-    if !rc_file.exists() {
-        println!("cargo:warning={} not found", rc_file.display());
-        Err(Error::new(
-            ERROR_FILE_NOT_FOUND.to_hresult(),
-            "File not found",
-        ))
+pub fn compile_resource(path: &Path, out_dir: &Path) -> Result<()> {
+    if !path.exists() {
+        println!("cargo:warning={} not found", path.display());
+        Err(ERROR_FILE_NOT_FOUND.into())
     } else {
-        let rc = resource_compiler(arch)?;
-
-        let res_file = out_dir.join(format!(
+        let out_file = out_dir.join(format!(
             "{}.res",
-            rc_file
-                .file_stem()
+            path.file_stem()
                 .unwrap_or_default()
                 .to_str()
                 .unwrap_or_default()
         ));
 
-        Command::new(&rc)
+        Command::new("rc")
             .args([
                 "/fo",
-                res_file.to_str().unwrap_or_default(),
-                rc_file.to_str().unwrap_or_default(),
+                out_file.to_str().unwrap_or_default(),
+                path.to_str().unwrap_or_default(),
             ])
             .status()
             .unwrap();
 
         println!(
             "cargo::rustc-link-arg-bins={}",
-            res_file.to_str().unwrap_or_default()
+            out_file.to_str().unwrap_or_default()
         );
 
         Ok(())
