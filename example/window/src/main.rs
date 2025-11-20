@@ -7,10 +7,6 @@ use windows::{
 };
 
 fn main() -> Result<ExitCode> {
-    let system_paths = SystemPaths::new()?;
-    let json = serde_json::to_string_pretty(&system_paths).unwrap_or_default();
-    println!("{}", json);
-
     let wc = WNDCLASSEXW {
         lpszClassName: w!("window"),
         cbSize: size_of::<WNDCLASSEXW>() as u32,

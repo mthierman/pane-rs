@@ -29,7 +29,6 @@ fn main() -> Result<()> {
         embed_manifest(&data.join("app.manifest"))?;
 
         compile_resource(
-            "x64",
             &data.join("app.rc"),
             &PathBuf::from(env::var("OUT_DIR").unwrap()),
         )?;
